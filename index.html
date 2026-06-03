@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>鹅厂人格研究所</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f8f6ff;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:20px;animation:fadeIn .5s ease}
+.page.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes barGrow{from{width:0}to{width:var(--pct)}}
+
+/* Start Page */
+.start-page{justify-content:center;text-align:center;background:linear-gradient(180deg,#ede9fe 0%,#f5f3ff 30%,#fdf2f8 70%,#fff1f2 100%);position:relative;overflow:hidden}
+.start-page::before{content:'';position:absolute;top:-50px;left:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(196,181,253,.4),transparent 70%);border-radius:50%}
+.start-page::after{content:'';position:absolute;bottom:40px;right:-30px;width:160px;height:160px;background:radial-gradient(circle,rgba(251,207,232,.4),transparent 70%);border-radius:50%}
+.logo-wrap{margin-bottom:16px;animation:float 3s ease-in-out infinite;position:relative;z-index:1}
+.logo-emoji{font-size:72px;filter:drop-shadow(0 4px 12px rgba(139,92,246,.2))}
+.app-title{font-size:26px;font-weight:900;letter-spacing:1px;background:linear-gradient(135deg,#7c3aed,#db2777);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;position:relative;z-index:1}
+.app-subtitle{font-size:14px;color:#6b7280;margin-bottom:36px;line-height:1.6;position:relative;z-index:1}
+.start-btn{width:210px;height:54px;border:none;border-radius:27px;background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:2px;box-shadow:0 6px 20px rgba(139,92,246,.35);transition:all .3s;position:relative;z-index:1}
+.start-btn:active{transform:scale(.95)}
+.test-info{margin-top:28px;display:flex;gap:28px;justify-content:center;position:relative;z-index:1}
+.info-item{display:flex;flex-direction:column;align-items:center;gap:2px}
+.info-num{font-size:20px;font-weight:800;color:#7c3aed}
+.info-label{font-size:11px;color:#9ca3af}
+
+/* Question Page */
+.q-page{justify-content:flex-start;padding-top:0;background:#f8f6ff}
+.progress-bar{width:100%;max-width:420px;height:6px;background:#e9e5f5;border-radius:3px;margin:16px auto 6px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#ec4899);border-radius:3px;transition:width .4s ease}
+.progress-text{font-size:12px;color:#9ca3af;text-align:center;margin-bottom:20px}
+.q-card{width:100%;max-width:420px;flex:1;display:flex;flex-direction:column;animation:slideUp .4s ease}
+.q-dimension{display:inline-block;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:600;margin-bottom:14px}
+.q-text{font-size:18px;font-weight:700;line-height:1.5;margin-bottom:24px;color:#1f2937}
+.options{display:flex;flex-direction:column;gap:10px}
+.option-btn{width:100%;padding:15px 16px;border:2px solid #e9e5f5;border-radius:14px;background:#fff;color:#374151;font-size:14px;line-height:1.5;text-align:left;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.option-btn:active{transform:scale(.98)}
+.option-btn.selected{border-color:#8b5cf6;background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(236,72,153,.08));color:#6d28d9;font-weight:600;box-shadow:0 2px 8px rgba(139,92,246,.15)}
+
+/* Result Page */
+.result-page{justify-content:flex-start;padding-top:0;position:relative;background:#f8f6ff}
+.result-hero{width:100%;max-width:420px;text-align:center;padding-top:24px}
+.result-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:12px}
+.result-char-img{width:180px;height:180px;object-fit:cover;border-radius:20px;margin:0 auto 12px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.1);animation:pop .6s ease}
+.result-char-name{font-size:28px;font-weight:900;margin-bottom:2px}
+.result-code{font-size:20px;font-weight:800;letter-spacing:3px;margin-bottom:2px}
+.result-tag{font-size:15px;font-weight:600;margin-bottom:2px}
+.result-name{font-size:13px;color:#6b7280;margin-bottom:16px}
+.result-bar-wrap{width:100%;max-width:260px;margin:0 auto 28px}
+.result-bar-outer{height:10px;background:#e9e5f5;border-radius:5px;overflow:hidden}
+.result-bar-inner{height:100%;border-radius:5px;--pct:0%;animation:barGrow 1s ease .3s forwards}
+.result-pct{font-size:13px;color:#9ca3af;margin-top:4px}
+.result-section{width:100%;max-width:420px;margin-bottom:16px;background:#fff;border-radius:16px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.result-section-title{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.result-section-title::before{content:'';width:3px;height:16px;border-radius:2px}
+.result-text{font-size:13px;line-height:1.9;color:#6b7280}
+.result-text strong{font-weight:600}
+.keywords{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.keyword-tag{padding:3px 10px;border-radius:16px;font-size:11px;font-weight:600}
+.result-actions{width:100%;max-width:420px;display:flex;gap:10px;margin:20px 0 36px}
+.action-btn{flex:1;height:46px;border:none;border-radius:23px;font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;letter-spacing:1px}
+.action-btn:active{transform:scale(.95)}
+.btn-primary{background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;box-shadow:0 4px 14px rgba(139,92,246,.25)}
+.btn-secondary{background:#fff;border:2px solid #e9e5f5;color:#6b7280}
+
+/* Character themes */
+.char-guguji{--c1:#f59e0b;--c2:#ea580c;--c3:#fef3c7;--cbg:linear-gradient(180deg,#fef9c3 0%,#fff7ed 50%,#f8f6ff 100%)}
+.char-niuxiaoniu{--c1:#ec4899;--c2:#db2777;--c3:#fce7f3;--cbg:linear-gradient(180deg,#fdf2f8 0%,#fff1f2 50%,#f8f6ff 100%)}
+.char-echangzhang{--c1:#3b82f6;--c2:#06b6d4;--c3:#dbeafe;--cbg:linear-gradient(180deg,#eff6ff 0%,#ecfeff 50%,#f8f6ff 100%)}
+.char-xingmishu{--c1:#8b5cf6;--c2:#a855f7;--c3:#ede9fe;--cbg:linear-gradient(180deg,#f5f3ff 0%,#faf5ff 50%,#f8f6ff 100%)}
+.char-shuaijingzhang{--c1:#d97706;--c2:#78716c;--c3:#fef3c7;--cbg:linear-gradient(180deg,#fffbeb 0%,#f5f5f4 50%,#f8f6ff 100%)}
+.char-yibaojiang{--c1:#0ea5e9;--c2:#f97316;--c3:#e0f2fe;--cbg:linear-gradient(180deg,#f0f9ff 0%,#fff7ed 50%,#f8f6ff 100%)}
+.char-madaidai{--c1:#f472b6;--c2:#fb7185;--c3:#fce7f3;--cbg:linear-gradient(180deg,#fdf2f8 0%,#fff1f2 50%,#f8f6ff 100%)}
+.char-feifeiyan{--c1:#6366f1;--c2:#ef4444;--c3:#e0e7ff;--cbg:linear-gradient(180deg,#eef2ff 0%,#fef2f2 50%,#f8f6ff 100%)}
+.char-huoyingli{--c1:#ea580c;--c2:#92400e;--c3:#ffedd5;--cbg:linear-gradient(180deg,#fff7ed 0%,#fef3c7 50%,#f8f6ff 100%)}
+.char-daihaok{--c1:#7c3aed;--c2:#0891b2;--c3:#ede9fe;--cbg:linear-gradient(180deg,#f5f3ff 0%,#ecfeff 50%,#f8f6ff 100%)}
+
+.result-page .result-hero{background:var(--cbg);border-radius:0 0 28px 28px;padding-bottom:20px}
+.result-badge{background:var(--c3);color:var(--c1)}
+.result-char-name{color:var(--c1)}
+.result-code{color:var(--c2)}
+.result-tag{color:var(--c1)}
+.result-bar-inner{background:linear-gradient(90deg,var(--c1),var(--c2))}
+.result-section-title::before{background:var(--c1)}
+.keyword-tag{background:var(--c3);color:var(--c1)}
+.q-dimension{background:var(--c3);color:var(--c1)}
+
+.dim-0{--c3:#dbeafe;--c1:#3b82f6}.dim-1{--c3:#fce7f3;--c1:#ec4899}.dim-2{--c3:#fef3c7;--c1:#f59e0b}.dim-3{--c3:#d1fae5;--c1:#10b981}.dim-4{--c3:#fee2e2;--c1:#ef4444}.dim-5{--c3:#e0e7ff;--c1:#6366f1}.dim-6{--c3:#ede9fe;--c1:#8b5cf6}.dim-7{--c3:#e0f2fe;--c1:#0ea5e9}
+</style>
+</head>
+<body>
+
+<div class="page start-page active" id="startPage">
+  <div class="logo-wrap"><div class="logo-emoji">🐧</div></div>
+  <div class="app-title">鹅厂人格研究所</div>
+  <div class="app-subtitle">测一测，你是鹅厂的哪只鹅？<br>10大专属人格 · 24道灵魂拷问 · MBTI风格解析</div>
+  <button class="start-btn" id="startBtn">开始测试</button>
+  <div class="test-info">
+    <div class="info-item"><span class="info-num">24</span><span class="info-label">测试题</span></div>
+    <div class="info-item"><span class="info-num">10</span><span class="info-label">人格类型</span></div>
+    <div class="info-item"><span class="info-num">8</span><span class="info-label">测评维度</span></div>
+  </div>
+</div>
+
+<div class="page q-page" id="questionPage">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText"></div>
+  <div class="q-card">
+    <div class="q-dimension" id="qDimension"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="qOptions"></div>
+  </div>
+</div>
+
+<div class="page result-page" id="resultPage">
+  <div class="result-hero">
+    <div class="result-badge" id="resultBadge"></div>
+    <img class="result-char-img" id="resultImg" src="" alt="">
+    <div class="result-char-name" id="resultCharName"></div>
+    <div class="result-code" id="resultCode"></div>
+    <div class="result-tag" id="resultTag"></div>
+    <div class="result-name" id="resultName"></div>
+    <div class="result-bar-wrap">
+      <div class="result-bar-outer"><div class="result-bar-inner" id="resultBar"></div></div>
+      <div class="result-pct" id="resultPct"></div>
+    </div>
+  </div>
+  <div class="result-section">
+    <div class="result-section-title">✨ 人格闪光点</div>
+    <div class="result-text" id="resultStrength"></div>
+  </div>
+  <div class="result-section">
+    <div class="result-section-title">💭 性格小纠结</div>
+    <div class="result-text" id="resultWeakness"></div>
+  </div>
+  <div class="result-section">
+    <div class="result-section-title">🏷 专属关键词</div>
+    <div class="keywords" id="resultKeywords"></div>
+  </div>
+  <div class="result-actions">
+    <button class="action-btn btn-secondary" id="restartBtn">重新测试</button>
+    <button class="action-btn btn-primary" id="shareBtn">分享结果</button>
+  </div>
+</div>
+
+<script>
+var DIMENSIONS = ['社交模式','恋爱观念','做事风格','消费习惯','情绪性格','处事原则','思维方式','生活作息'];
+
+var QUESTIONS = [
+  {dim:0, text:'朋友聚会上，你通常是——', opts:[
+    {text:'全场串场的社交蝴蝶，每个圈子都能聊两句，最后大家都认识你了',p:'鹅厂长',s:'飞飞燕'},
+    {text:'默默坐在角落观察所有人，偶尔被点到才说一句，但每句都在点上',p:'帅警长',s:'马呆呆'},
+    {text:'跟最熟的那几个待一块，谁被冷落了你就去搭话暖场',p:'怡宝酱',s:'咕咕鸡'},
+    {text:'安安静静吃东西，有人来找你聊就聊，没人找就自己刷手机也行',p:'代号K',s:'星秘书'}
+  ]},
+  {dim:0, text:'朋友突然拉你去一个全是陌生人的局，你的第一反应——', opts:[
+    {text:'走！多认识几个朋友不亏，今晚又是扩充人脉的好机会',p:'鹅厂长',s:'咕咕鸡'},
+    {text:'去就去，但我会快速锁定一两个气场对的人深聊，不搞无效社交',p:'飞飞燕',s:'帅警长'},
+    {text:'有点不想去……但朋友开口了不好拒绝，硬着头皮上吧',p:'怡宝酱',s:'马呆呆'},
+    {text:'先问清楚是什么局、有谁，心里盘算一下值不值得出动',p:'星秘书',s:'代号K'}
+  ]},
+  {dim:0, text:'社交场合有人明显被冷落了，你会——', opts:[
+    {text:'直接走过去搭话，三秒钟破冰，把人拉进话题',p:'咕咕鸡',s:'鹅厂长'},
+    {text:'默默注意到，不动声色地制造机会让TA自然加入',p:'马呆呆',s:'帅警长'},
+    {text:'替TA说两句话解围，然后悄悄观察TA是不是真的融入了',p:'怡宝酱',s:'火影李'},
+    {text:'会上前但不会太刻意，自然聊两句，合适就带着一起玩',p:'飞飞燕',s:'代号K'}
+  ]},
+  {dim:1, text:'恋爱中你最在意什么——', opts:[
+    {text:'对方开不开心，我愿意义务性付出，让对方过得好就是我最大的满足',p:'牛小牛',s:'怡宝酱'},
+    {text:'真诚和专一，我给的不抠搜，你也要同样对我',p:'火影李',s:'代号K'},
+    {text:'三观契合、能一起玩到一块，两个人待着舒服最重要',p:'鹅厂长',s:'咕咕鸡'},
+    {text:'各自独立但彼此支撑，不黏糊但有默契',p:'帅警长',s:'星秘书'}
+  ]},
+  {dim:1, text:'伴侣生气了不理你，你会——', opts:[
+    {text:'先反思是不是自己哪里没做好，然后想办法哄，愿意放下身段',p:'牛小牛',s:'马呆呆'},
+    {text:'直接问怎么了，有什么说开就好，最受不了冷处理',p:'飞飞燕',s:'火影李'},
+    {text:'嘴上说着「随便你」，但心里已经在复盘到底哪里出了问题',p:'怡宝酱',s:'帅警长'},
+    {text:'不会立刻追问，给对方空间，等情绪过了再认真聊',p:'星秘书',s:'代号K'}
+  ]},
+  {dim:1, text:'理想的约会方式是——', opts:[
+    {text:'在家一起打游戏、点外卖，安安静静待在一起就很幸福',p:'牛小牛',s:'代号K'},
+    {text:'一起出门吃好吃的、逛好玩的，我买单，开心最重要',p:'火影李',s:'怡宝酱'},
+    {text:'安排一场有仪式感的约会，提前规划好路线和惊喜',p:'星秘书',s:'马呆呆'},
+    {text:'随性一点，临时起意也挺好，走到哪算哪',p:'鹅厂长',s:'咕咕鸡'}
+  ]},
+  {dim:2, text:'接到一个复杂的全新任务，你的第一反应——', opts:[
+    {text:'先找有没有现成的模板或捷径，能不重复造轮子就不重复',p:'咕咕鸡',s:'代号K'},
+    {text:'立刻拆解任务，列清单排优先级，一步步推进，绝不拖延',p:'星秘书',s:'帅警长'},
+    {text:'直接开干，边做边调整，想太多不如先动手',p:'飞飞燕',s:'鹅厂长'},
+    {text:'先了解核心需求是什么，搞清楚方向再下手，不做无用功',p:'火影李',s:'马呆呆'}
+  ]},
+  {dim:2, text:'团队项目里，你通常是什么角色——', opts:[
+    {text:'出点子的人，总能在卡壳时想出新思路，帮团队找到突破口',p:'咕咕鸡',s:'星秘书'},
+    {text:'兜底的人，别人搞不定的我来收，稳住全局不翻车',p:'火影李',s:'帅警长'},
+    {text:'执行的人，方案一定就开干，效率拉满不拖后腿',p:'飞飞燕',s:'代号K'},
+    {text:'润滑剂，谁有情绪我都能安抚，团队氛围我来守',p:'马呆呆',s:'怡宝酱'}
+  ]},
+  {dim:2, text:'截止日期快到了但还没做完，你会——', opts:[
+    {text:'不慌，总能找到加速完成的方法，效率工具用起来',p:'咕咕鸡',s:'鹅厂长'},
+    {text:'提前就有进度表，这种情况基本不会出现在我身上',p:'星秘书',s:'火影李'},
+    {text:'逼自己一把，冲刺搞定，临场爆发力很强的',p:'代号K',s:'飞飞燕'},
+    {text:'先保核心交付，细节可以后续补，分清主次',p:'帅警长',s:'牛小牛'}
+  ]},
+  {dim:3, text:'月底发工资了，你第一件事——', opts:[
+    {text:'先给对象/家人买点什么，自己够用就行',p:'牛小牛',s:'马呆呆'},
+    {text:'存一笔固定金额，剩下的做好分配再花',p:'星秘书',s:'帅警长'},
+    {text:'约朋友吃顿好的庆祝一下，开心最重要',p:'火影李',s:'鹅厂长'},
+    {text:'看着余额心里有数就行，不刻意规划，花着花着就花完了',p:'代号K',s:'咕咕鸡'}
+  ]},
+  {dim:3, text:'好朋友过生日，你会——', opts:[
+    {text:'早就提前想好了送什么，而且一定是TA提过想要的东西',p:'马呆呆',s:'牛小牛'},
+    {text:'买实用的好东西，花钱不心疼，朋友值得最好的',p:'火影李',s:'怡宝酱'},
+    {text:'认真挑一份用心的小礼物，不贵但有仪式感',p:'星秘书',s:'帅警长'},
+    {text:'约出来吃顿饭就是最好的庆祝，礼物随意不纠结',p:'鹅厂长',s:'代号K'}
+  ]},
+  {dim:3, text:'看到喜欢的东西但有点贵，你会——', opts:[
+    {text:'如果是给在意的人买的，贵就贵了，眼睛都不眨',p:'牛小牛',s:'火影李'},
+    {text:'纠结一下，但最后大概率会买，对自己好点没毛病',p:'怡宝酱',s:'鹅厂长'},
+    {text:'先加购物车，等一个打折时机，不着急',p:'星秘书',s:'咕咕鸡'},
+    {text:'看心情，当时想买就买了，不想买就忘了',p:'代号K',s:'飞飞燕'}
+  ]},
+  {dim:4, text:'朋友被欺负了来跟你吐槽，你的反应——', opts:[
+    {text:'直接说「谁？我帮你出头」，立刻进入战斗模式',p:'咕咕鸡',s:'飞飞燕'},
+    {text:'先共情TA的感受，陪着一起骂，情绪上完全站TA',p:'马呆呆',s:'怡宝酱'},
+    {text:'冷静分析来龙去脉，帮TA理清思路和下一步怎么办',p:'飞飞燕',s:'星秘书'},
+    {text:'安慰TA别气了，然后默默记下这件事，找机会帮TA处理',p:'帅警长',s:'火影李'}
+  ]},
+  {dim:4, text:'自己emo了，你会怎么处理——', opts:[
+    {text:'找朋友聊，说出来就好了，不太会自己憋着',p:'鹅厂长',s:'怡宝酱'},
+    {text:'自己消化，不想让别人担心，表面上一切正常',p:'帅警长',s:'马呆呆'},
+    {text:'疯狂打游戏/刷剧转移注意力，不想面对就先逃避一下',p:'牛小牛',s:'代号K'},
+    {text:'安静地整理一下情绪，想清楚原因再决定怎么办',p:'星秘书',s:'咕咕鸡'}
+  ]},
+  {dim:4, text:'被人误解了，你会——', opts:[
+    {text:'必须解释清楚！误解不消除我心里过不去',p:'飞飞燕',s:'咕咕鸡'},
+    {text:'嘴上说着「懒得解释」，但心里很不舒服，会找一个合适的机会说',p:'怡宝酱',s:'马呆呆'},
+    {text:'先看对方是什么态度，如果值得沟通就认真解释',p:'星秘书',s:'火影李'},
+    {text:'解释一次就够了，信不信随TA，我行得正坐得端',p:'帅警长',s:'代号K'}
+  ]},
+  {dim:5, text:'原则性问题上，你和好朋友意见不同——', opts:[
+    {text:'坚持自己的立场，原则不能让步，但也不影响做朋友',p:'帅警长',s:'飞飞燕'},
+    {text:'会犹豫，不想因为这事伤感情，但心里其实过不去',p:'怡宝酱',s:'牛小牛'},
+    {text:'直接说清楚自己的底线在哪，求同存异嘛',p:'咕咕鸡',s:'火影李'},
+    {text:'表面上不多说了，但会默默按照自己的方式坚持',p:'代号K',s:'星秘书'}
+  ]},
+  {dim:5, text:'答应别人的事，临时和自己的安排冲突了——', opts:[
+    {text:'既然答应了就做到，自己的事往后排，信用比什么都重要',p:'火影李',s:'帅警长'},
+    {text:'重新调整时间表，尽量两边都兼顾，不让任何一方失望',p:'星秘书',s:'马呆呆'},
+    {text:'先看哪个更重要，跟对方说明情况改个时间，态度诚恳就行',p:'飞飞燕',s:'咕咕鸡'},
+    {text:'会很纠结，觉得两边都对不住，最后硬扛两边跑',p:'怡宝酱',s:'牛小牛'}
+  ]},
+  {dim:5, text:'遇到不公平的待遇——', opts:[
+    {text:'当场就怼回去，忍不了一点，凭什么？',p:'飞飞燕',s:'咕咕鸡'},
+    {text:'先忍住，但心里暗暗记下，找机会用实力证明自己',p:'代号K',s:'帅警长'},
+    {text:'找到关键负责人理性沟通，用逻辑和事实说话',p:'星秘书',s:'火影李'},
+    {text:'看情况，如果涉及我在意的人或事，绝不退让；不涉及就懒得计较',p:'鹅厂长',s:'怡宝酱'}
+  ]},
+  {dim:6, text:'遇到一个棘手的问题，你习惯——', opts:[
+    {text:'先想想有没有类似的案例可以参考，找最省力的解法',p:'咕咕鸡',s:'代号K'},
+    {text:'系统地分析所有可能性，制定最优方案再动手',p:'星秘书',s:'帅警长'},
+    {text:'先试再说，边做边修正，不行就换方向',p:'飞飞燕',s:'鹅厂长'},
+    {text:'找到最核心的那个问题点，把关键环节搞定就行',p:'火影李',s:'马呆呆'}
+  ]},
+  {dim:6, text:'计划好了的事突然被打乱，你——', opts:[
+    {text:'很烦躁，计划被打乱比事情本身更让我难受',p:'星秘书',s:'马呆呆'},
+    {text:'还行，重新规划一下就是了，变通能力在线',p:'咕咕鸡',s:'火影李'},
+    {text:'无所谓，本来就没什么是一成不变的，灵活应对',p:'鹅厂长',s:'代号K'},
+    {text:'表面说没事，但内心需要一点时间消化这个变化',p:'帅警长',s:'怡宝酱'}
+  ]},
+  {dim:6, text:'做一个重要决定时，你更依赖——', opts:[
+    {text:'直觉和经验，很多时候第一感觉就是对的',p:'鹅厂长',s:'咕咕鸡'},
+    {text:'数据和逻辑，分析清楚利弊再下判断',p:'星秘书',s:'飞飞燕'},
+    {text:'身边人的意见，尤其是信任的人怎么看我',p:'马呆呆',s:'牛小牛'},
+    {text:'自己的价值观和底线，不管别人怎么说，对得起自己最重要',p:'帅警长',s:'代号K'}
+  ]},
+  {dim:7, text:'你的周末通常是——', opts:[
+    {text:'提前规划好了：上午健身、下午看书、晚上约朋友，充实且高效',p:'星秘书',s:'火影李'},
+    {text:'睡到自然醒，然后看心情决定干嘛，主打一个随性',p:'鹅厂长',s:'代号K'},
+    {text:'打游戏/追剧为主，偶尔被朋友叫出去社交',p:'牛小牛',s:'马呆呆'},
+    {text:'可能在家宅着，也可能突然跑去哪玩，完全看当天的状态',p:'代号K',s:'飞飞燕'}
+  ]},
+  {dim:7, text:'你的作息规律吗——', opts:[
+    {text:'必须规律，几点睡觉几点起床都有节奏，打乱就不舒服',p:'星秘书',s:'帅警长'},
+    {text:'完全随缘，凌晨三点精神抖擞，下午两点困成狗，看状态',p:'鹅厂长',s:'咕咕鸡'},
+    {text:'知道早睡好但就是做不到，每次都「今晚一定早睡」然后失败',p:'牛小牛',s:'怡宝酱'},
+    {text:'大致有个范围，不会太自律也不会太放飞，中等水平',p:'火影李',s:'代号K'}
+  ]},
+  {dim:7, text:'计划好的周末突然被临时插了件事——', opts:[
+    {text:'看是什么事，如果是朋友有难必须到场，其他事情往后排',p:'火影李',s:'咕咕鸡'},
+    {text:'心里很不爽，但还是得去，嘴上抱怨几句、该做的照做',p:'怡宝酱',s:'马呆呆'},
+    {text:'快速重新规划，把新的事排进时间表，保证都不耽误',p:'星秘书',s:'帅警长'},
+    {text:'无所谓，反正是随性的，有变化就有变化，随机应变',p:'鹅厂长',s:'代号K'}
+  ]}
+];
+
+var RESULTS = {
+  '咕咕鸡':{
+    emoji:'🐔',code:'FLEX',tag:'灵变忠义型',name:'聪明仗义的路子王',
+    css:'char-guguji',img:'https://s.coze.cn/image/F8RDVoJXxv0/',
+    strength:'你天生就是那个脑子转得比嘴还快的机灵鬼。别人还在纠结怎么做的时候，你已经找到了最省力的路径冲到了终点——不是偷懒，是你真的太会了。你有一种让人服气的小聪明，不是耍心机那种，而是那种「明明大家都在做同一件事，你偏偏能找到捷径」的灵光。\n\n但最让人动容的，是你对朋友的仗义。你聪明，但你从不把聪明用在算计朋友上。有人欺负你身边的人，你第一个站出来，拦都拦不住。你的灵活变通是为了保护你在意的人，你的小聪明是给朋友撑腰的武器。在你身边，朋友们总有一种「有你在我就安心」的安全感。',
+    weakness:'你性格里那个温柔的小纠结，是仗义带来的——你太容易为朋友的事冲在前面，有时候甚至比自己上心还上心，冲动出头之后偶尔也会想「我是不是反应过激了」，但下次遇到类似的事，你还是控制不住自己。你的仗义是本能，偶尔的冲动也是本能，这恰恰是你最真实的地方。',
+    keywords:['灵光','仗义','变通','效率']
+  },
+  '牛小牛':{
+    emoji:'🐂',code:'CORE',tag:'深情付出型',name:'温柔恋爱脑的甘愿型选手',
+    css:'char-niuxiaoniu',img:'https://s.coze.cn/image/o3oFIlt-VZ4/',
+    strength:'你是那种谈恋爱会把整颗心都交出去的人。不是飞蛾扑火的傻，而是一种「我知道我要什么，我要的就是让你开心」的笃定温柔。你愿意省下自己的开销，把最好的留给对方，不是因为你不爱惜自己，而是因为在你的价值排序里，对方笑了你就觉得值了。\n\n你的随和不是没有主见，而是你真的觉得「都行」——吃什么你随对方，去哪你随对方，不是敷衍，是真的觉得和对方在一起做什么都好。打游戏的时候你最开心，不是因为游戏本身，而是因为可以一起待着。你对朋友的包容度也极高，别人犯了小错你从来不记仇，因为你觉得关系比对错重要。',
+    weakness:'你心里那个温柔的小矛盾，是你太习惯把自己往后排了。你省着给自己花，大方地给别人花，有时候也会在深夜想「我是不是对自己太亏了」——但第二天醒来，该付出的你还是照付不误。你知道自己这样有时候会有点委屈，但改变起来真的好难，因为对你在意的人好，已经成了你的本能。',
+    keywords:['恋爱脑','付出','节俭','温柔']
+  },
+  '鹅厂长':{
+    emoji:'🦢',code:'VIBE',tag:'不羁社牛型',name:'夜猫社交达人的倔强灵魂',
+    css:'char-echangzhang',img:'https://s.coze.cn/image/0j2V9VpOm-o/',
+    strength:'你是那种凌晨三点还在群里活跃、第二天中午才冒泡的灵魂选手。你的社交能量仿佛永远满格，走到哪里都能迅速和陌生人聊起来，吃个饭的功夫就能加三个好友。你不喜欢被条条框框束缚，做事不纠结细节，能用就行、差不多就好——这种松弛感让你身边的人都很舒服。\n\n但别以为随性就是没立场。你认定的那件事，你自己心里有数，十个人劝你都没用。不是固执，是你真的想清楚了，只是懒得跟每个人解释原因。你的执拗不是蛮横，而是一种「我知道自己在做什么」的笃定。你随的是小事，执的是大事，这个分寸你拿捏得稳稳的。',
+    weakness:'你性格里那个有趣的矛盾，是随性和执拗的碰撞——你可以在无关紧要的事上随性到让人抓狂，「随便」「都行」「你定」，但在真正在意的事情上，突然变得寸步不让，让朋友一脸懵：「你不是很随性的吗？」是的，你随性，但你有你的底线，只是不常亮出来而已。这种反差，恰恰是你最迷人的地方。',
+    keywords:['社交','随性','执拗','熬夜']
+  },
+  '星秘书':{
+    emoji:'⭐',code:'NOVA',tag:'严谨新创型',name:'自律规划师的脑洞宇宙',
+    css:'char-xingmishu',img:'https://s.coze.cn/image/IUO9RY6RaVc/',
+    strength:'你大概是那种连放假都有日程表的人——不是强迫症，是你真的享受「一切尽在掌握」的踏实感。你的工位、你的文件夹、你的时间线，全都井井有条，让人觉得你活在一个精密运转的小宇宙里。别人还在想「先做哪个」，你已经排好了优先级、设好了提醒。\n\n但别以为你就是刻板的计划机器。你严谨的外壳之下，藏着一个永不停歇的脑洞引擎。你最喜欢做的事就是在框架里创新——不是天马行空的乱想，而是在有条理的基础上构思新方案、新路径。你讨厌的不是变化本身，而是毫无准备的变化。给你一点时间规划，你能把任何新挑战变成一次精彩的创新。',
+    weakness:'你性格里那个优雅的小拉扯，是秩序与创新的共存——你既需要计划带来的安全感，又渴望新点子带来的兴奋感。当突发变化撞上你的既定安排，你的内心会经历一场小规模地震：不是做不到灵活应对，而是「计划被打乱」这件事本身就让你不舒服。你最终都能搞定，只是过程中需要一点自我消化的小时间。',
+    keywords:['规划','创新','自律','秩序']
+  },
+  '帅警长':{
+    emoji:'🛡',code:'MACE',tag:'闷骚原则型',name:'沉默守护者的锋利底线',
+    css:'char-shuaijingzhang',img:'https://s.coze.cn/image/JQbnYjAsgN8/',
+    strength:'你是那种人群中话最少、但存在感最强的人。不是刻意装酷，是你习惯了先观察再发言，每一句话出口都经过内心的精密计算。别人觉得你高冷，其实你只是在用自己的方式感受周围的一切——你的细腻远超别人的想象，谁的情绪有微妙变化，你第一个察觉到。\n\n你有自己明确的底线，这条线画好了就不动。不是不近人情，是你知道一旦退了一步就会退第二步，所以干脆守住。别人可能会觉得你太硬，但了解你的人都知道，你的原则不是冷漠，是对「对的事」的坚持。你不是不讲情面，而是有些东西不能拿来做人情。',
+    weakness:'你性格里那个迷人的小矛盾，是闷和骚的共存——你表面沉默如水，内心却暗流涌动，有很多想法和情绪只是在等一个对的人说出来。你习惯把细腻藏在沉默后面，有时候别人觉得你「怎么什么都不说」，其实你只是还没找到合适的表达方式。你的心思比你表现出来的丰富太多，这一点，只有走近你的人才知道。',
+    keywords:['闷骚','底线','细腻','沉默']
+  },
+  '怡宝酱':{
+    emoji:'💧',code:'DAHL',tag:'侠暖心软型',name:'嘴硬心软的侠义好人',
+    css:'char-yibaojiang',img:'https://s.coze.cn/image/CUCGhE3Ypkk/',
+    strength:'你是那种「嘴上说着不管了，手已经伸出去帮忙」的人。你的慷慨不是大手大脚，而是对朋友从不算计——该花的钱不心疼，该出的力不犹豫。你热心肠到什么程度呢？朋友半夜打电话说需要你，你嘴上抱怨「你烦不烦」，人已经在穿鞋出门了。\n\n你的善良不是那种主动型的「我来帮你」，而是被动型的「不好意思拒绝」。别人一开口你就被架住了，心里明明想着「这次一定要说不」，但看到对方的期待，「不」字就是出不了口。这不是软弱，是你骨子里的善良在作祟，你真的做不到对别人的困难视而不见。',
+    weakness:'你性格里那个可爱的小拉扯，是嘴硬和心软的永恒博弈——你的嘴永远比心快一步，先放出去一句硬话，然后默默用行动把场面圆回来。「我不管了」说完三分钟就开始操心，「下次不帮了」下次比谁帮得都积极。你有时候也会想「为什么我就是说不出口」，但说真的，你身边的人都懂你，嘴硬只是你保护自己的方式，心软才是你的底色。',
+    keywords:['大方','嘴硬','心软','人情架']
+  },
+  '马呆呆':{
+    emoji:'🌸',code:'WREN',tag:'共情软萌型',name:'细腻治愈的小太阳',
+    css:'char-madaidai',img:'https://s.coze.cn/image/qfevllQkLPw/',
+    strength:'你是那种走进房间就能感知到空气温度变化的人。谁今天心情不好，谁在强撑，谁其实想哭但忍着——你不需要别人说，你就是知道。你的共情能力像超能力一样，别人的情绪会直接传导到你身上，让你成为朋友圈里最懂「安慰人」的那一个。\n\n你偏爱一切可爱甜美的东西，不是幼稚，是你真心觉得世界温柔一点比较好。你习惯性地把别人的需求排在自己前面，不是没自我，而是你真的很在意身边人的感受。跟你待在一起，别人会自然地放松下来，因为你的温柔是有温度的，不是敷衍的「没事没事」，而是真的在用心听、用心感受。',
+    weakness:'你性格里那个柔软的小纠结，是细腻带来的内耗——你太容易感知到别人的情绪变化了，有时候对方自己都还没意识到，你已经开始想「是不是我做错了什么」。你习惯性地迁就别人，偶尔也会在夜深人静的时候想「我什么时候能先照顾一下自己」——但第二天太阳升起，你还是那个先把别人放在心上的小太阳，因为温柔就是你的本能，改不掉也不想改。',
+    keywords:['软萌','共情','迁就','治愈']
+  },
+  '飞飞燕':{
+    emoji:'⚡',code:'BOLT',tag:'毒舌行动型',name:'一针见血的雷厉女王',
+    css:'char-feifeiyan',img:'https://s.coze.cn/image/AwmGZIOdJ-k/',
+    strength:'你是那种一句话能让人清醒三天的人。不是刻薄，是你的表达太精准了——别人还在绕弯子暗示，你已经把问题说到根上了。你的毒舌不是攻击，是一种高效沟通方式：与其花半小时委婉地说一个问题，不如30秒说清楚，剩下29分钟解决问题。\n\n你的行动力和你的嘴巴一样快。团队里有人说「我觉得可以这样」，你已经在执行了。你不是冲动，是你判断得快、下手更快。对你来说，想清楚了还等什么？犹豫才是最大的浪费。你做事干脆利落，跟你合作的人又爱又怕——爱你的效率，怕你的真话。',
+    weakness:'你性格里那个锋利的小柔软，是毒舌与仗义的共存——你说话一针见血，但你说出来的每句「狠话」背后，都是对朋友的在意。你越在意谁，嘴上越不饶谁，但行动上永远是第一个冲上去帮忙的。你偶尔也会想「是不是话说太重了」，但让你憋着不说比让你跑十公里还难。你的毒舌是你的铠甲，朋友是你的软肋，这就是你。',
+    keywords:['毒舌','行动力','直率','友情']
+  },
+  '火影李':{
+    emoji:'🔥',code:'AEGS',tag:'靠谱护盾型',name:'真诚可靠的坚实后盾',
+    css:'char-huoyingli',img:'https://s.coze.cn/image/G_OCKpHbYgM/',
+    strength:'你是那种「有事找李姐」的存在——不是逞能，是你真的太靠谱了。你说出去的每一句话、答应的每一件事，都像刻在石头上一样稳。朋友遇到难处，你不会说「加油你可以的」这种空话，你会说「我来帮你」，然后真的来帮你，从头帮到尾。\n\n对待感情你专一得让人动容。不是不会欣赏别人，是你心里有了一个人就自动装不下第二个。你大方到什么程度呢？对自己可以省，对在意的人从不抠搜。你请客从不看价格，送礼从不含糊，因为你觉得「对你好」这件事不值得犹豫。',
+    weakness:'你性格里那个稳重的小纠结，是靠谱带来的过载——你太习惯帮别人兜底了，有时候明明自己也扛不住了，但想到「他们还指望我」就咬着牙继续撑。你很少开口让别人帮自己，不是不需要，是觉得「我是那个该扛事的人」。偶尔你也会累，但你的责任感让你很难说出「这次我不行」——这不是逞强，是你对自己的要求比任何人对你的要求都高。',
+    keywords:['靠谱','豪爽','专一','兜底']
+  },
+  '代号K':{
+    emoji:'🌀',code:'WILD',tag:'倔强佛系型',name:'散漫外表下的全力以赴选手',
+    css:'char-daihaok',img:'https://s.coze.cn/image/rOyQWetQWi4/',
+    strength:'你是那种「无所谓啊都行」挂在嘴边的人，对日常小事的态度佛系到令人发指——吃什么？都行。去哪？随便。穿什么？看着办。但千万别以为你是真的什么都不在意，你只是把有限的能量留给了真正重要的人和事。\n\n你骨子里有一股不服输的倔劲，只是平时懒得亮出来。日常的你大大咧咧、不拘小节，但一旦触碰到你在意的事情——嗖的一下，佛系外衣脱掉，全力以赴的战斗模式启动。这种反差感让不了解你的人以为你在开玩笑，让了解你的人直呼「认真的K太可怕了」。你的纯粹善良是你最珍贵的底色，你对人的好从不带目的，就是单纯的觉得你值得。',
+    weakness:'你性格里那个散漫的小矛盾，是佛系与倔强的碰撞——你可以在99%的事情上随缘到让人无语，但那1%你认真起来的样子判若两人。你也偶尔困惑「为什么我大部分时候都提不起劲，突然又有那么强的执念」——其实不是矛盾，你只是把所有的「认真额度」都留给了最值得的事。散漫是你的常态，全力以赴是你的高光，二者都是真实的你。',
+    keywords:['佛系','倔强','纯粹','燃']
+  }
+};
+
+var currentQ = 0;
+var answers = [];
+var scores = {};
+
+function initScores(){
+  scores = {};
+  var keys = Object.keys(RESULTS);
+  for(var i=0;i<keys.length;i++) scores[keys[i]] = 0;
+}
+
+function showPage(id){
+  var pages = document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startTest(){
+  currentQ = 0;
+  answers = [];
+  initScores();
+  renderQuestion();
+  showPage('questionPage');
+}
+
+function renderQuestion(){
+  var q = QUESTIONS[currentQ];
+  var pct = (currentQ / 24 * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = (currentQ+1) + ' / 24';
+  var dimEl = document.getElementById('qDimension');
+  dimEl.textContent = DIMENSIONS[q.dim];
+  dimEl.className = 'q-dimension dim-' + q.dim;
+  document.getElementById('qText').textContent = q.text;
+  var optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  for(var i=0; i<q.opts.length; i++){
+    var btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.setAttribute('data-idx', i);
+    btn.textContent = q.opts[i].text;
+    (function(idx){
+      btn.addEventListener('click', function(){ selectOption(idx); });
+    })(i);
+    optWrap.appendChild(btn);
+  }
+}
+
+function selectOption(idx){
+  var q = QUESTIONS[currentQ];
+  var opt = q.opts[idx];
+  var btns = document.querySelectorAll('.option-btn');
+  for(var i=0;i<btns.length;i++){
+    if(i === idx) btns[i].classList.add('selected');
+    else btns[i].classList.remove('selected');
+  }
+  scores[opt.p] = (scores[opt.p] || 0) + 3;
+  scores[opt.s] = (scores[opt.s] || 0) + 1;
+  answers.push(idx);
+  setTimeout(function(){
+    currentQ++;
+    if(currentQ < 24){ renderQuestion(); }
+    else { showResult(); }
+  }, 350);
+}
+
+function showResult(){
+  var maxScore = 0, maxChar = '';
+  var keys = Object.keys(scores);
+  for(var i=0;i<keys.length;i++){
+    if(scores[keys[i]] > maxScore){ maxScore = scores[keys[i]]; maxChar = keys[i]; }
+  }
+  var r = RESULTS[maxChar];
+  var totalPossible = 24 * 3 + 24 * 1;
+  var pct = Math.round(maxScore / totalPossible * 100);
+  var matchPct = Math.min(98, Math.max(72, pct + 30));
+
+  showPage('resultPage');
+  var rp = document.getElementById('resultPage');
+  rp.className = 'page result-page active ' + r.css;
+
+  document.getElementById('resultBadge').textContent = r.tag;
+  document.getElementById('resultImg').src = r.img;
+  document.getElementById('resultCharName').textContent = maxChar;
+  document.getElementById('resultCode').textContent = r.code;
+  document.getElementById('resultTag').textContent = r.tag;
+  document.getElementById('resultName').textContent = r.name;
+  document.getElementById('resultPct').textContent = matchPct + '% 匹配度';
+
+  var bar = document.getElementById('resultBar');
+  bar.style.setProperty('--pct', matchPct + '%');
+  bar.style.width = '0%';
+  setTimeout(function(){ bar.style.width = matchPct + '%'; }, 100);
+
+  document.getElementById('resultStrength').innerHTML = r.strength.replace(/\n/g, '<br>');
+  document.getElementById('resultWeakness').innerHTML = r.weakness.replace(/\n/g, '<br>');
+
+  var kwWrap = document.getElementById('resultKeywords');
+  kwWrap.innerHTML = '';
+  for(var i=0;i<r.keywords.length;i++){
+    var span = document.createElement('span');
+    span.className = 'keyword-tag';
+    span.textContent = r.keywords[i];
+    kwWrap.appendChild(span);
+  }
+}
+
+function restartTest(){ startTest(); }
+
+function shareResult(){
+  var text = '我在鹅厂人格研究所测出了我的人格！快来测测你是哪只鹅~';
+  if(navigator.share){
+    navigator.share({title:'鹅厂人格研究所',text:text,url:location.href}).catch(function(){});
+  } else {
+    var el = document.createElement('textarea');
+    el.value = text + location.href;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert('链接已复制，快去分享吧！');
+  }
+}
+
+document.getElementById('startBtn').addEventListener('click', startTest);
+document.getElementById('restartBtn').addEventListener('click', restartTest);
+document.getElementById('shareBtn').addEventListener('click', shareResult);
+</script>
+</body>
+</html>
